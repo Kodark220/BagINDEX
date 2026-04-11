@@ -1,0 +1,35 @@
+{
+  "name": "bags-index",
+  "version": "1.0.0",
+  "description": "AI-powered index fund agent for Bags creator tokens on Solana",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "ts-node-dev --respawn --transpile-only server/index.ts",
+    "dev:client": "cd client && npm run dev",
+    "build:client": "cd client && npm run build",
+    "start": "ts-node server/index.ts",
+    "install:all": "npm install && cd client && npm install"
+  },
+  "dependencies": {
+    "@bagsfm/bags-sdk": "^1.0.0",
+    "@solana/web3.js": "^1.98.0",
+    "axios": "^1.7.0",
+    "bs58": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "node-cron": "^3.0.3",
+    "openai": "^4.70.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.0.0",
+    "@types/node-cron": "^3.0.11",
+    "concurrently": "^9.0.0",
+    "ts-node": "^10.9.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.0"
+  }
+}
