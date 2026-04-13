@@ -29,20 +29,22 @@ interface TokenScore {
 interface EnrichedToken {
   name: string;
   symbol: string;
-  description: string;
+  description?: string;
   image: string;
   tokenMint: string;
-  status: string;
+  status?: string;
   twitter?: string;
   website?: string;
-  lifetimeFees: number;
-  totalClaimed: number;
+  lifetimeFees?: number;
+  totalClaimed?: number;
   priceUsd: number;
-  marketCap: number;
-  volume24h: number;
-  holders: number;
-  liquidity: number;
-  score: TokenScore;
+  marketCap?: number;
+  volume24h?: number;
+  holders?: number;
+  liquidity?: number;
+  score: TokenScore | number;
+  change24h?: number;
+  weight?: number;
   aiReasoning?: string;
 }
 
@@ -72,6 +74,9 @@ export default function TokenDetailModal({
 }) {
   if (!token) return null;
 
+  const scoreObj = typeof token.score === "object" ? token.score : null;
+  const overallScore = scoreObj ? scoreObj.overall : (typeof token.score === "number" ? token.score : 0);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -90,11 +95,11 @@ export default function TokenDetailModal({
               <DialogTitle className="text-xl">{token.name}</DialogTitle>
               <DialogDescription className="flex items-center gap-2 mt-1">
                 <span>${token.symbol}</span>
-                <Badge variant="outline" className="text-[10px]">{token.status}</Badge>
+                {token.status && <Badge variant="outline" className="text-[10px]">{token.status}</Badge>}
               </DialogDescription>
             </div>
             <div className="ml-auto">
-              <ScoreBadge score={token.score.overall} size="lg" />
+              <ScoreBadge score={overallScore} size="lg" />
             </div>
           </div>
         </DialogHeader>
@@ -109,21 +114,24 @@ export default function TokenDetailModal({
         {/* Market stats grid */}
         <div className="grid grid-cols-3 gap-3 mt-4">
           <StatItem icon={DollarSign} label="Price" value={formatUsd(token.priceUsd)} />
-          <StatItem icon={BarChart3} label="MCap" value={formatUsd(token.marketCap)} />
-          <StatItem icon={TrendingUp} label="24h Vol" value={formatUsd(token.volume24h)} />
-          <StatItem icon={Droplets} label="Liquidity" value={formatUsd(token.liquidity)} />
-          <StatItem icon={UsersRound} label="Holders" value={token.holders.toLocaleString()} />
-          <StatItem icon={DollarSign} label="Fees" value={`${token.lifetimeFees.toFixed(2)} SOL`} />
+          {token.marketCap != null && <StatItem icon={BarChart3} label="MCap" value={formatUsd(token.marketCap)} />}
+          {token.volume24h != null && <StatItem icon={TrendingUp} label="24h Vol" value={formatUsd(token.volume24h)} />}
+          {token.liquidity != null && <StatItem icon={Droplets} label="Liquidity" value={formatUsd(token.liquidity)} />}
+          {token.holders != null && <StatItem icon={UsersRound} label="Holders" value={token.holders.toLocaleString()} />}
+          {token.lifetimeFees != null && <StatItem icon={DollarSign} label="Fees" value={`${token.lifetimeFees.toFixed(2)} SOL`} />}
+          {token.change24h != null && <StatItem icon={TrendingUp} label="24h Change" value={`${token.change24h >= 0 ? "+" : ""}${token.change24h.toFixed(2)}%`} />}
+          {token.weight != null && <StatItem icon={BarChart3} label="Weight" value={`${token.weight.toFixed(1)}%`} />}
         </div>
 
-        {/* Score breakdown */}
+        {/* Score breakdown (only if full score object available) */}
+        {scoreObj && (
         <div className="mt-5 space-y-3">
           <h4 className="text-sm font-semibold text-white flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-bags-primary" />
             Score Breakdown
           </h4>
           {scoreDimensions.map((dim) => {
-            const value = token.score[dim.key];
+            const value = scoreObj[dim.key];
             const Icon = dim.icon;
             return (
               <div key={dim.key} className="space-y-1">
@@ -146,6 +154,7 @@ export default function TokenDetailModal({
             );
           })}
         </div>
+        )}
 
         {/* AI Reasoning */}
         {token.aiReasoning && (
