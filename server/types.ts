@@ -72,6 +72,9 @@ export interface EnrichedToken {
 
   // Computed scores
   score: TokenScore;
+
+  // AI reasoning (if available)
+  aiReasoning?: string;
 }
 
 export interface TokenScore {

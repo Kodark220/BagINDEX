@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
+import { Skeleton } from "./ui/skeleton";
 import ScoreBadge from "./ScoreBadge";
+import TokenDetailModal from "./TokenDetailModal";
 import {
   Coins,
   ExternalLink,
@@ -31,6 +33,7 @@ interface EnrichedToken {
   description: string;
   image: string;
   tokenMint: string;
+  status: string;
   twitter?: string;
   website?: string;
   lifetimeFees: number;
@@ -41,6 +44,7 @@ interface EnrichedToken {
   holders: number;
   liquidity: number;
   score: TokenScore;
+  aiReasoning?: string;
 }
 
 function formatUsd(n: number): string {
@@ -79,6 +83,7 @@ export default function Tokens() {
   const { data: tokens, loading } = useApi<EnrichedToken[]>("/tokens?sort=score");
   const { data: status } = useApi<{ tokensTracked: number; indexesActive: number; lastRefresh: string | null; uptime: number }>("/status", 15_000);
   const [search, setSearch] = useState("");
+  const [selectedToken, setSelectedToken] = useState<EnrichedToken | null>(null);
 
   const filtered =
     tokens?.filter(
@@ -127,8 +132,18 @@ export default function Tokens() {
 
       {loading ? (
         <div className="space-y-3">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 shimmer rounded-xl" />
+          {[...Array(8)].map((_, i) => (
+            <Card key={i} className="bg-card-gradient">
+              <CardContent className="p-4 flex items-center gap-4">
+                <Skeleton className="w-9 h-9 rounded-full shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-3 w-16" />
+                </div>
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-5 w-8 rounded-full" />
+              </CardContent>
+            </Card>
           ))}
         </div>
       ) : !tokens || tokens.length === 0 ? (
@@ -160,7 +175,41 @@ export default function Tokens() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0 mt-4">
-            <div className="overflow-x-auto">
+            {/* Mobile card view */}
+            <div className="block lg:hidden space-y-2 px-4 pb-4">
+              {filtered.map((token, i) => (
+                <div
+                  key={token.tokenMint}
+                  onClick={() => setSelectedToken(token)}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-bags-dark/30 border border-bags-border/30 hover:bg-bags-card-hover/50 transition-colors cursor-pointer"
+                >
+                  <span className="text-bags-muted text-sm font-medium w-6">{i + 1}</span>
+                  <div className="w-9 h-9 rounded-full bg-bags-border overflow-hidden shrink-0 ring-1 ring-bags-border/50">
+                    {token.image ? (
+                      <img src={token.image} alt={token.symbol} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xs font-bold text-bags-muted bg-bags-dark">
+                        {token.symbol.charAt(0)}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white font-semibold text-sm truncate">{token.name}</div>
+                    <div className="text-bags-muted text-xs">${token.symbol} · {formatUsd(token.marketCap)}</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-right">
+                      <div className="text-white text-sm">{formatUsd(token.priceUsd)}</div>
+                      <div className="text-bags-muted text-xs">{formatUsd(token.volume24h)} vol</div>
+                    </div>
+                    <ScoreBadge score={token.score.overall} size="sm" />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop table view */}
+            <div className="hidden lg:block overflow-x-auto">
               {/* Header */}
               <div className="grid grid-cols-[40px_minmax(140px,1.5fr)_100px_100px_100px_100px_80px_100px_70px_140px_70px] gap-1 px-6 py-3 text-[10px] text-bags-muted uppercase tracking-widest border-b border-bags-border/50 min-w-[1100px]">
                 <div>#</div>
@@ -182,7 +231,8 @@ export default function Tokens() {
                   <motion.div
                     key={token.tokenMint}
                     variants={row}
-                    className="grid grid-cols-[40px_minmax(140px,1.5fr)_100px_100px_100px_100px_80px_100px_70px_140px_70px] gap-1 items-center px-6 py-3 border-b border-bags-border/30 hover:bg-bags-card-hover/50 transition-colors"
+                    onClick={() => setSelectedToken(token)}
+                    className="grid grid-cols-[40px_minmax(140px,1.5fr)_100px_100px_100px_100px_80px_100px_70px_140px_70px] gap-1 items-center px-6 py-3 border-b border-bags-border/30 hover:bg-bags-card-hover/50 transition-colors cursor-pointer"
                   >
                     {/* Rank */}
                     <div className="text-bags-muted text-sm font-medium">{i + 1}</div>
@@ -254,6 +304,13 @@ export default function Tokens() {
           </CardContent>
         </Card>
       )}
+
+      {/* Token detail modal */}
+      <TokenDetailModal
+        token={selectedToken}
+        open={!!selectedToken}
+        onOpenChange={(open) => { if (!open) setSelectedToken(null); }}
+      />
     </motion.div>
   );
 }

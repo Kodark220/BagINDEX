@@ -302,6 +302,7 @@ async function refreshTokenData(): Promise<EnrichedToken[]> {
       const ai = aiResults.get(e.tokenMint);
       if (ai) {
         e.score.overall = ai.adjustedScore;
+        e.aiReasoning = ai.reasoning;
       }
     }
   } catch {

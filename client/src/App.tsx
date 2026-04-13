@@ -3,6 +3,8 @@ import Header from "./components/Header";
 import Dashboard from "./components/Dashboard";
 import IndexDetail from "./components/IndexDetail";
 import Tokens from "./components/Tokens";
+import Compare from "./components/Compare";
+import { Toaster } from "./components/ui/toaster";
 
 export default function App() {
   return (
@@ -13,8 +15,10 @@ export default function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/index/:id" element={<IndexDetail />} />
           <Route path="/tokens" element={<Tokens />} />
+          <Route path="/compare" element={<Compare />} />
         </Routes>
       </main>
+      <Toaster />
     </div>
   );
 }

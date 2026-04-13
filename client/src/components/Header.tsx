@@ -2,11 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { BarChart3, Layers, ExternalLink, Zap } from "lucide-react";
+import { BarChart3, Layers, ExternalLink, Zap, ArrowLeftRight } from "lucide-react";
 
 const navItems = [
   { path: "/", label: "Indexes", icon: Layers },
   { path: "/tokens", label: "All Tokens", icon: BarChart3 },
+  { path: "/compare", label: "Compare", icon: ArrowLeftRight },
 ];
 
 export default function Header() {

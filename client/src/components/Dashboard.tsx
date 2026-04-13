@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
+import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useApi } from "../hooks/useApi";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Progress } from "./ui/progress";
+import { Skeleton } from "./ui/skeleton";
 import ScoreBadge from "./ScoreBadge";
+import { toast } from "sonner";
+import { ResponsiveContainer, AreaChart, Area } from "recharts";
 import {
   Activity,
   TrendingUp,
@@ -82,6 +85,19 @@ const item = {
 export default function Dashboard() {
   const { data: indexes, loading: idxLoading } = useApi<IndexFund[]>("/indexes", 30_000);
   const { data: status } = useApi<StatusData>("/status", 15_000);
+  const prevRefreshRef = useRef<string | null>(null);
+
+  // Toast on rebalance
+  useEffect(() => {
+    if (!status?.lastRefresh) return;
+    const prev = prevRefreshRef.current;
+    prevRefreshRef.current = status.lastRefresh;
+    if (prev && prev !== status.lastRefresh) {
+      toast.success("Rebalance complete", {
+        description: `${status.tokensTracked} tokens scored, ${status.indexesActive} indexes updated`,
+      });
+    }
+  }, [status?.lastRefresh]);
 
   return (
     <div className="space-y-10">
@@ -117,7 +133,7 @@ export default function Dashboard() {
       </motion.div>
 
       {/* Stats bar */}
-      {status && (
+      {status ? (
         <motion.div
           variants={container}
           initial="hidden"
@@ -157,13 +173,52 @@ export default function Dashboard() {
             />
           </motion.div>
         </motion.div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="bg-card-gradient">
+              <CardContent className="p-4 flex items-center gap-3">
+                <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-5 w-12" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       )}
 
       {/* Index cards */}
       {idxLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-xl border border-bags-border h-72 shimmer" />
+          {[1, 2, 3, 4, 5].map((i) => (
+            <Card key={i} className="bg-card-gradient h-72">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <Skeleton className="w-11 h-11 rounded-xl" />
+                  <div className="flex gap-2">
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                    <Skeleton className="h-5 w-8 rounded-full" />
+                  </div>
+                </div>
+                <Skeleton className="h-5 w-32 mt-3" />
+                <Skeleton className="h-4 w-full mt-2" />
+                <Skeleton className="h-4 w-3/4" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4, 5].map((j) => (
+                    <Skeleton key={j} className="w-8 h-8 rounded-full" />
+                  ))}
+                </div>
+                <Skeleton className="h-px w-full" />
+                <div className="flex justify-between">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-12" />
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       ) : (
@@ -191,6 +246,10 @@ function IndexCard({ fund }: { fund: IndexFund }) {
     fund.tokens.length > 0
       ? Math.round(fund.tokens.reduce((s, t) => s + t.score, 0) / fund.tokens.length)
       : 0;
+
+  // Build sparkline data from token scores (sorted by weight)
+  const sparkData = fund.tokens.slice(0, 12).map((t, i) => ({ i, v: t.score }));
+  const sparkColor = avgScore >= 70 ? "#22c55e" : avgScore >= 40 ? "#eab308" : "#ef4444";
 
   return (
     <Link to={`/index/${fund.id}`} className="block group">
@@ -241,6 +300,31 @@ function IndexCard({ fund }: { fund: IndexFund }) {
               <span className="text-xs text-bags-muted">Awaiting data...</span>
             )}
           </div>
+
+          {/* Sparkline */}
+          {sparkData.length > 1 && (
+            <div className="h-10 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={sparkData}>
+                  <defs>
+                    <linearGradient id={`spark-${fund.id}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={sparkColor} stopOpacity={0.3} />
+                      <stop offset="100%" stopColor={sparkColor} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <Area
+                    type="monotone"
+                    dataKey="v"
+                    stroke={sparkColor}
+                    strokeWidth={1.5}
+                    fill={`url(#spark-${fund.id})`}
+                    dot={false}
+                    isAnimationActive={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          )}
 
           {/* Bottom row */}
           <div className="flex items-center justify-between pt-2 border-t border-bags-border/50">
