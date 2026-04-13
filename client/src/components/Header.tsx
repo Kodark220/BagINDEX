@@ -25,9 +25,11 @@ export default function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-bags-primary to-bags-secondary flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-bags-primary/20 group-hover:shadow-bags-primary/40 transition-shadow">
-                B
-              </div>
+              <img
+                src="/icon.svg"
+                alt="BagsIndex"
+                className="w-9 h-9 rounded-lg shadow-lg shadow-bags-primary/20 group-hover:shadow-bags-primary/40 transition-shadow"
+              />
               <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-bags-green rounded-full border-2 border-bags-dark pulse-dot" />
             </div>
             <div className="flex items-center gap-2">

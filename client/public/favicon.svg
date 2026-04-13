@@ -1,4 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#6366f1"/>
-  <text x="16" y="23" font-family="Arial,sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">B</text>
+  <defs>
+    <linearGradient id="n" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="40%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#d946ef"/>
+    </linearGradient>
+    <radialGradient id="b" cx="45%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0a0a14"/>
+    </radialGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#b)"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" fill="none" stroke="url(#n)" stroke-width="0.8" opacity="0.5"/>
+  <path d="M5 22 C8 20,10 17,13 15 C16 13,17 16,19 16.5 C21 17,23 12,25 9 L27 7" stroke="url(#n)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <circle cx="27" cy="7" r="2" fill="#d946ef"/>
 </svg>

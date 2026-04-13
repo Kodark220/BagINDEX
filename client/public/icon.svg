@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <radialGradient id="bgR" cx="45%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="50%" stop-color="#0f0f1a"/>
+      <stop offset="100%" stop-color="#050510"/>
+    </radialGradient>
+    <linearGradient id="neon" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="40%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#d946ef"/>
+    </linearGradient>
+    <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="barG" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.5"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feFlood flood-color="#6366f1" flood-opacity="0.6" result="c"/>
+      <feComposite in="c" in2="b" operator="in" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tipGlow">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feFlood flood-color="#d946ef" flood-opacity="0.7" result="c"/>
+      <feComposite in="c" in2="b" operator="in" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="textG">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feFlood flood-color="#a855f7" flood-opacity="0.35" result="c"/>
+      <feComposite in="c" in2="b" operator="in" result="g"/>
+      <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="clip"><rect width="512" height="512" rx="108"/></clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="108" fill="url(#bgR)"/>
+
+  <g clip-path="url(#clip)">
+
+    <!-- Subtle orbit -->
+    <ellipse cx="256" cy="220" rx="200" ry="55" fill="none" stroke="url(#neon)" stroke-width="0.6" opacity="0.1" transform="rotate(-12, 256, 220)"/>
+
+    <!-- Particles -->
+    <circle cx="80" cy="120" r="1.5" fill="#06b6d4" opacity="0.5"/>
+    <circle cx="430" cy="90" r="2" fill="#d946ef" opacity="0.35"/>
+    <circle cx="450" cy="300" r="1.5" fill="#6366f1" opacity="0.4"/>
+    <circle cx="60" cy="380" r="1" fill="#a855f7" opacity="0.4"/>
+
+    <!-- Grid -->
+    <g opacity="0.04" stroke="#818cf8" stroke-width="0.7">
+      <line x1="50" y1="150" x2="462" y2="150"/>
+      <line x1="50" y1="230" x2="462" y2="230"/>
+      <line x1="50" y1="310" x2="462" y2="310"/>
+      <line x1="140" y1="70" x2="140" y2="430"/>
+      <line x1="256" y1="70" x2="256" y2="430"/>
+      <line x1="372" y1="70" x2="372" y2="430"/>
+    </g>
+
+    <!-- Chart fill -->
+    <path d="M60 310 C100 295,130 270,170 255 C210 240,230 265,260 270 C290 275,315 205,340 175 C365 145,390 125,430 105 L450 92 L450 400 L60 400Z" fill="url(#fill)"/>
+
+    <!-- Chart line -->
+    <path d="M60 310 C100 295,130 270,170 255 C210 240,230 265,260 270 C290 275,315 205,340 175 C365 145,390 125,430 105 L450 92"
+          stroke="url(#neon)" stroke-width="5" stroke-linecap="round" fill="none" filter="url(#glow)"/>
+
+    <!-- Data points -->
+    <circle cx="170" cy="255" r="12" fill="#6366f1" opacity="0.1"/>
+    <circle cx="170" cy="255" r="4.5" fill="#0f0f1a" stroke="#6366f1" stroke-width="2"/>
+    <circle cx="260" cy="270" r="12" fill="#818cf8" opacity="0.1"/>
+    <circle cx="260" cy="270" r="4.5" fill="#0f0f1a" stroke="#818cf8" stroke-width="2"/>
+    <circle cx="340" cy="175" r="14" fill="#a855f7" opacity="0.1"/>
+    <circle cx="340" cy="175" r="5" fill="#0f0f1a" stroke="#a855f7" stroke-width="2.5"/>
+    <circle cx="430" cy="105" r="14" fill="#d946ef" opacity="0.12"/>
+    <circle cx="430" cy="105" r="5" fill="#0f0f1a" stroke="#d946ef" stroke-width="2.5"/>
+
+    <!-- Tip -->
+    <circle cx="450" cy="92" r="18" fill="#d946ef" opacity="0.08"/>
+    <circle cx="450" cy="92" r="4" fill="#d946ef" filter="url(#tipGlow)"/>
+
+    <!-- Mini bars -->
+    <g opacity="0.35">
+      <rect x="70"  y="370" width="14" height="30" rx="2" fill="url(#barG)"/>
+      <rect x="92"  y="360" width="14" height="40" rx="2" fill="url(#barG)"/>
+      <rect x="114" y="365" width="14" height="35" rx="2" fill="url(#barG)"/>
+      <rect x="136" y="350" width="14" height="50" rx="2" fill="url(#barG)"/>
+      <rect x="158" y="358" width="14" height="42" rx="2" fill="url(#barG)"/>
+      <rect x="180" y="342" width="14" height="58" rx="2" fill="url(#barG)"/>
+      <rect x="202" y="355" width="14" height="45" rx="2" fill="url(#barG)"/>
+      <rect x="224" y="340" width="14" height="60" rx="2" fill="url(#barG)"/>
+      <rect x="246" y="348" width="14" height="52" rx="2" fill="url(#barG)"/>
+      <rect x="268" y="335" width="14" height="65" rx="2" fill="url(#barG)"/>
+      <rect x="290" y="345" width="14" height="55" rx="2" fill="url(#barG)"/>
+      <rect x="312" y="332" width="14" height="68" rx="2" fill="url(#barG)"/>
+      <rect x="334" y="342" width="14" height="58" rx="2" fill="url(#barG)"/>
+      <rect x="356" y="338" width="14" height="62" rx="2" fill="url(#barG)"/>
+      <rect x="378" y="345" width="14" height="55" rx="2" fill="url(#barG)"/>
+      <rect x="400" y="336" width="14" height="64" rx="2" fill="url(#barG)"/>
+      <rect x="422" y="342" width="14" height="58" rx="2" fill="url(#barG)"/>
+    </g>
+
+    <!-- Neural net nodes -->
+    <g opacity="0.55">
+      <circle cx="90" cy="140" r="3.5" fill="none" stroke="#06b6d4" stroke-width="1.2"/>
+      <circle cx="120" cy="118" r="3" fill="none" stroke="#6366f1" stroke-width="1.2"/>
+      <circle cx="105" cy="165" r="3" fill="none" stroke="#818cf8" stroke-width="1.2"/>
+      <circle cx="145" cy="145" r="2.5" fill="none" stroke="#a855f7" stroke-width="1.2"/>
+      <line x1="90" y1="140" x2="120" y2="118" stroke="#6366f1" stroke-width="0.7" opacity="0.5"/>
+      <line x1="90" y1="140" x2="105" y2="165" stroke="#818cf8" stroke-width="0.7" opacity="0.5"/>
+      <line x1="120" y1="118" x2="145" y2="145" stroke="#a855f7" stroke-width="0.7" opacity="0.4"/>
+      <line x1="105" y1="165" x2="145" y2="145" stroke="#a855f7" stroke-width="0.7" opacity="0.4"/>
+      <circle cx="90" cy="140" r="1.5" fill="#06b6d4"/>
+      <circle cx="120" cy="118" r="1.5" fill="#6366f1"/>
+      <circle cx="105" cy="165" r="1.5" fill="#818cf8"/>
+      <circle cx="145" cy="145" r="1.5" fill="#a855f7"/>
+    </g>
+
+  </g>
+
+  <!-- Border -->
+  <rect x="2" y="2" width="508" height="508" rx="106" fill="none" stroke="url(#neon)" stroke-width="2" opacity="0.35"/>
+
+  <!-- BI lettermark -->
+  <g filter="url(#textG)">
+    <text x="256" y="475" text-anchor="middle" font-family="'SF Pro Display','Inter',system-ui,sans-serif" font-size="44" font-weight="900" letter-spacing="10" fill="white">BI</text>
+  </g>
+
+</svg>
