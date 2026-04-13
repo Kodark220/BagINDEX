@@ -6,8 +6,8 @@ import {
   getToken,
   getRebalanceHistory,
   getLastRefresh,
+  fullRefresh,
 } from "../services/index-manager";
-import { triggerRebalance } from "../services/rebalancer";
 import { launchBagsIndexToken } from "../services/token-launcher";
 
 const router = Router();
@@ -70,7 +70,7 @@ router.get("/rebalance/history", (_req: Request, res: Response) => {
 /** POST /api/rebalance/trigger — Manually trigger a rebalance */
 router.post("/rebalance/trigger", async (_req: Request, res: Response) => {
   try {
-    await triggerRebalance();
+    await fullRefresh();
     res.json({ success: true, message: "Rebalance complete" });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
@@ -98,7 +98,7 @@ router.get("/status", (_req: Request, res: Response) => {
 /** GET /api/cron/rebalance — Endpoint for Vercel Cron Jobs */
 router.get("/cron/rebalance", async (_req: Request, res: Response) => {
   try {
-    await triggerRebalance();
+    await fullRefresh();
     res.json({ success: true, message: "Cron rebalance complete" });
   } catch (err: any) {
     res.status(500).json({ success: false, error: err.message });
